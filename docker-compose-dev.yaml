@@ -1,0 +1,20 @@
+version: "3.0"
+services:
+  db:
+    container_name: "db"
+    image: postgres:14.1-alpine
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_DB}
+    volumes:
+      - postgres_db:/var/lib/postgresql/data
+    ports:
+      - ${DB_PORT}:5432
+    networks:
+      - custom
+networks:
+  custom:
+    driver: bridge
+volumes:
+  postgres_db:
