@@ -4,8 +4,8 @@ from typing import Optional
 from fastapi import Depends, Request
 from fastapi_users import BaseUserManager, UUIDIDMixin
 
-from database.models import User
-from database.session import get_user_db
+from app.database.models import User
+from app.database.session import get_user_db
 from environ import SK
 
 

@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import create_async_engine
 from sqlalchemy.orm import sessionmaker
 
 from environ import DB_DB, DB_HOST, DB_USER, DB_PORT, DB_PASSWORD
-from database.models import User
+from app.database.models import User
 
 
 engine = create_async_engine(
@@ -17,7 +17,7 @@ engine = create_async_engine(
     execution_options={"isolation_level": "AUTOCOMMIT"},
 )
 
-async_session = sessionmaker(engine, expire_on_commit=False, class_=AsyncSession)
+async_session = sessionmaker(bind=engine, expire_on_commit=False, class_=AsyncSession)
 
 
 async def get_db() -> Generator:

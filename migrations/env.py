@@ -5,7 +5,7 @@ from sqlalchemy import pool
 from alembic import context
 
 import environ
-from database.models import Base
+from app.database.models import metadata
 
 
 config = context.config
@@ -21,7 +21,7 @@ config.set_section_option(section, "DB_PORT", environ.DB_PORT)
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-target_metadata = Base.metadata
+target_metadata = metadata
 
 
 def run_migrations_offline() -> None:
