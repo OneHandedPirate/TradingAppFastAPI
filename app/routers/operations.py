@@ -1,4 +1,5 @@
 from typing import Any
+from time import sleep
 
 from fastapi import APIRouter, Depends, status
 from fastapi.exceptions import HTTPException
@@ -6,6 +7,7 @@ from sqlalchemy import select, insert
 from sqlalchemy.ext.asyncio import AsyncSession
 from app.database.session import get_db
 from app.schemas import OperationResponse, OperationCreate
+from fastapi_cache.decorator import cache
 
 from app.database import models
 
@@ -13,6 +15,13 @@ router = APIRouter(
     prefix='/operations',
     tags=['operations']
 )
+
+
+@router.get("/long_operation")
+@cache(expire=60)
+def get_long_operation():
+    sleep(5)
+    return "Много данных"
 
 
 @router.get('')
