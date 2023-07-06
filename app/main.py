@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from redis import asyncio as aioredis
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
+from fastapi.middleware.cors import CORSMiddleware
 
 from app.auth.auth import auth_backend, fastapi_users_users
 from app.auth.schemas import UserRead, UserCreate
@@ -36,3 +37,16 @@ app.include_router(tasks_router)
 async def startup():
     redis = aioredis.from_url(f"redis://{REDIS_HOST}:{REDIS_PORT}")
     FastAPICache.init(RedisBackend(redis), prefix="fastapi-cache")
+
+origins = [
+    "http://localhost",
+    "http://localhost:8080",
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],   # На проде обязательно нужно указывать все методы
+    allow_headers=["*"],   # и заголовки
+)
