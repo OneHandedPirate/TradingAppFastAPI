@@ -1,7 +1,4 @@
-import uuid
-
 from fastapi import FastAPI
-from fastapi_users import FastAPIUsers
 from redis import asyncio as aioredis
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend

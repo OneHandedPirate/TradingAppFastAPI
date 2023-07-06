@@ -1,3 +1,10 @@
+[tool.pytest.ini_options]
+pythonpath = [
+    ".", "app",
+]
+
+asyncio_mode = "auto"
+
 [tool.poetry]
 name = "trading-app"
 version = "0.1.0"
@@ -16,6 +23,8 @@ fastapi-users = {extras = ["sqlalchemy"], version = "^12.0.0"}
 fastapi-cache2 = {extras = ["redis"], version = "^0.2.1"}
 celery = "^5.3.1"
 flower = "^2.0.0"
+pytest = "^7.4.0"
+pytest-asyncio = "^0.21.0"
 
 
 [build-system]
