@@ -29,6 +29,7 @@ async def get_specific_operations(operation_type: str, db: AsyncSession = Depend
     try:
         query = select(models.operation).filter(models.operation.c.type == operation_type)
         result = await db.execute(query)
+        print(result)
         return {
             "status": "success",
             "data": result.all(),
