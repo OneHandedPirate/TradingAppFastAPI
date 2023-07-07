@@ -46,7 +46,7 @@ app.include_router(chat_router)
 
 @app.post("/role", tags=["roles"])
 async def create_role(new_role: RoleCreate, db: AsyncSession = Depends(get_db)):
-    stmt = insert(models.role).values(**new_role.dict())
+    stmt = insert(models.Role).values(**new_role.dict())
     await db.execute(stmt)
     await db.commit()
     return {"status": "success"}

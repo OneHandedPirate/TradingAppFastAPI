@@ -5,19 +5,17 @@ from fastapi_users_db_sqlalchemy import SQLAlchemyBaseUserTableUUID
 from sqlalchemy import Integer, ForeignKey, Column, String, TIMESTAMP, Boolean
 from sqlalchemy.dialects.postgresql import JSON, UUID
 from sqlalchemy.orm import declarative_base
-from sqlalchemy import MetaData, Table
 
 
-metadata = MetaData()
 Base = declarative_base()
 
-role = Table(
-    'role',
-    metadata,
-    Column('id', Integer, primary_key=True, nullable=False),
-    Column('name', String, nullable=False),
-    Column('permissions', JSON)
-)
+
+class Role(Base):
+    __tablename__ = 'role'
+
+    id = Column(Integer, primary_key=True, nullable=False)
+    name = Column(String, nullable=False)
+    permissions = Column(JSON)
 
 
 class Operation(Base):
@@ -38,7 +36,7 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     email = Column(String, nullable=False)
     username = Column(String, nullable=False)
-    role_id = Column(Integer, ForeignKey(role.c.id), default=1)
+    role_id = Column(Integer, ForeignKey("role.id"), default=1)
     registered_at = Column(TIMESTAMP, default=datetime.utcnow, nullable=False)
     hashed_password = Column(String(length=1024), nullable=False)
     is_active = Column(Boolean, default=True, nullable=False)
