@@ -10,10 +10,12 @@ from app.schemas import OperationResponse, OperationCreate
 from fastapi_cache.decorator import cache
 
 from app.database import models
+from app.dependencies import operations_guard
 
 router = APIRouter(
     prefix='/operations',
-    tags=['operations']
+    tags=['operations'],
+    dependencies=[Depends(operations_guard)]
 )
 
 
