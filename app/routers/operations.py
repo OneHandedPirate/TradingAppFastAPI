@@ -29,12 +29,12 @@ def get_long_operation():
 @router.get('')
 async def get_specific_operations(operation_type: str, db: AsyncSession = Depends(get_db)):
     try:
-        query = select(models.operation).filter(models.operation.c.type == operation_type)
+        query = select(models.Operation).filter(models.Operation.type == operation_type)
         result = await db.execute(query)
-        print(result)
+        res = [i[0].as_dict() for i in result.all()]
         return {
             "status": "success",
-            "data": result.all(),
+            "data": res,
             "details": None
         }
     except ZeroDivisionError:
@@ -54,7 +54,7 @@ async def get_specific_operations(operation_type: str, db: AsyncSession = Depend
 
 @router.post('')
 async def create_operations(new_operation: OperationCreate, db: AsyncSession = Depends(get_db)):
-    stmt = insert(models.operation).values(**new_operation.dict())
+    stmt = insert(models.Operation).values(**new_operation.dict())
     await db.execute(stmt)
     await db.commit()
     return {"status": "success"}

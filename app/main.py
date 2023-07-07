@@ -1,17 +1,22 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from redis import asyncio as aioredis
 from fastapi_cache import FastAPICache
 from fastapi_cache.backends.redis import RedisBackend
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
+from sqlalchemy import insert
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.auth.auth import auth_backend, fastapi_users_users
 from app.auth.schemas import UserRead, UserCreate
+from app.database import models
 from app.routers.operations import router as operations_router
 from app.routers.tasks import router as tasks_router
 from app.routers.chat import router as chat_router
 from frontend.pages.router import router as frontend_router
 from environ import REDIS_PORT, REDIS_HOST
+from app.database.session import get_db
+from app.schemas import RoleCreate
 
 
 app = FastAPI(
@@ -32,11 +37,19 @@ app.include_router(
     tags=["auth"],
 )
 
+
 app.include_router(operations_router)
 app.include_router(tasks_router)
 app.include_router(frontend_router)
 app.include_router(chat_router)
 
+
+@app.post("/role", tags=["roles"])
+async def create_role(new_role: RoleCreate, db: AsyncSession = Depends(get_db)):
+    stmt = insert(models.role).values(**new_role.dict())
+    await db.execute(stmt)
+    await db.commit()
+    return {"status": "success"}
 
 @app.on_event("startup")
 async def startup():
@@ -59,3 +72,5 @@ app.add_middleware(
 
 
 app.mount("/static", StaticFiles(directory="frontend/static"), name="static")
+
+

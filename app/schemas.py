@@ -21,3 +21,7 @@ class OperationCreate(BaseModel):
     figi: str
     instrument_type: str
     type: str
+
+
+class RoleCreate(BaseModel):
+    name: str
