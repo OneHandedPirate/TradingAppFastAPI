@@ -19,19 +19,19 @@ role = Table(
     Column('permissions', JSON)
 )
 
-user = Table(
-    'user',
-    metadata,
-    Column("id", UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
-    Column('email', String, nullable=False),
-    Column("username", String, nullable=False),
-    Column('hashed_password', String, nullable=False),
-    Column('registered_at', TIMESTAMP, default=datetime.utcnow),
-    Column('role_id', Integer, ForeignKey(role.c.id)),
-    Column('is_active', Boolean, default=True, nullable=False),
-    Column('is_superuser', Boolean, default=False, nullable=False),
-    Column('is_verified', Boolean, default=False, nullable=False)
-)
+# user = Table(
+#     'user',
+#     metadata,
+#     Column("id", UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
+#     Column('email', String, nullable=False),
+#     Column("username", String, nullable=False),
+#     Column('hashed_password', String, nullable=False),
+#     Column('registered_at', TIMESTAMP, default=datetime.utcnow),
+#     Column('role_id', Integer, ForeignKey(role.c.id)),
+#     Column('is_active', Boolean, default=True, nullable=False),
+#     Column('is_superuser', Boolean, default=False, nullable=False),
+#     Column('is_verified', Boolean, default=False, nullable=False)
+# )
 
 operation = Table(
     'operation',
@@ -58,6 +58,18 @@ class User(SQLAlchemyBaseUserTableUUID, Base):
     is_active = Column(Boolean, default=True, nullable=False)
     is_superuser = Column(Boolean, default=False, nullable=False)
     is_verified = Column(Boolean, default=False, nullable=False)
+
+
+class Message(Base):
+    __tablename__ = 'message'
+
+    id = Column(Integer, primary_key=True)
+    message = Column(String)
+
+    def as_dict(self):
+        return {c.name: getattr(self, c.name) for c in self.__table__.columns}
+
+
 
 
 

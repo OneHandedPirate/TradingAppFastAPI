@@ -9,6 +9,7 @@ from app.auth.auth import auth_backend, fastapi_users_users
 from app.auth.schemas import UserRead, UserCreate
 from app.routers.operations import router as operations_router
 from app.routers.tasks import router as tasks_router
+from app.routers.chat import router as chat_router
 from frontend.pages.router import router as frontend_router
 from environ import REDIS_PORT, REDIS_HOST
 
@@ -34,7 +35,7 @@ app.include_router(
 app.include_router(operations_router)
 app.include_router(tasks_router)
 app.include_router(frontend_router)
-
+app.include_router(chat_router)
 
 
 @app.on_event("startup")
@@ -44,7 +45,8 @@ async def startup():
 
 origins = [
     "http://localhost",
-    "http://localhost:8080",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
 ]
 
 app.add_middleware(
