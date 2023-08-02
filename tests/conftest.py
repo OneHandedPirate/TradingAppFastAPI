@@ -9,7 +9,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import NullPool
 
 from app.database.session import get_db
-from app.database.models import metadata
+from app.database.models import Base
 from environ import (DB_USER_TEST, DB_PASSWORD_TEST,
                      DB_HOST_TEST, DB_PORT_TEST, DB_DB_TEST)
 from app.main import app
@@ -19,7 +19,7 @@ DATABASE_URL_TEST = f'postgresql+asyncpg://{DB_USER_TEST}:{DB_PASSWORD_TEST}@{DB
 
 engine_test = create_async_engine(DATABASE_URL_TEST, poolclass=NullPool)
 async_session_maker = sessionmaker(engine_test, class_=AsyncSession, expire_on_commit=False)
-metadata.bind = engine_test
+Base.metadata.bind = engine_test
 
 
 async def override_get_async_session() -> AsyncGenerator[AsyncSession, None]:
@@ -33,10 +33,10 @@ app.dependency_overrides[get_db] = override_get_async_session
 @pytest.fixture(autouse=True, scope='session')
 async def prepare_database():
     async with engine_test.begin() as conn:
-        await conn.run_sync(metadata.create_all)
+        await conn.run_sync(Base.metadata.create_all)
     yield
     async with engine_test.begin() as conn:
-        await conn.run_sync(metadata.drop_all)
+        await conn.run_sync(Base.metadata.drop_all)
 
 
 @pytest.fixture(scope='session')
